@@ -1,0 +1,12 @@
+*{
+  padding: 0;
+  margin: 0;
+}
+video{
+  background-color: #222;
+}
+
+.video-style {
+  width: 100%;
+  height: 234px;
+}
