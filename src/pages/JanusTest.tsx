@@ -91,7 +91,7 @@ function JanusTest () {
   }
 
   const handleVideoInputChange = (e: any) => {
-    console.log(e)
+
   }
 
   return (
