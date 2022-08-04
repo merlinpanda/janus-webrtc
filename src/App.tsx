@@ -1,5 +1,6 @@
 import VideoRoom from './pages/VideoRoom';
-import { Routes, Route, BrowserRouter } from 'react-router-dom';
+import JanusTest from './pages/JanusTest';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './App.css'
 
 function App() {
@@ -7,6 +8,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<VideoRoom />} />
+        <Route path="/test" element={<JanusTest />} />
       </Routes>
     </BrowserRouter>
   )

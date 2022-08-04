@@ -232,7 +232,7 @@ declare namespace JanusJS {
 		static randomString(length: number): string;
 		static attachMediaStream(element: HTMLMediaElement, stream: MediaStream): void;
 		static reattachMediaStream(to: HTMLMediaElement, from: HTMLMediaElement): void;
-
+    static listDevices(callback, config: null = null);
 		static stopAllTracks(stream: MediaStream): void;
 
 		constructor(options: ConstructorOptions);
