@@ -2,10 +2,12 @@ import RTC from "../utils/rtc";
 import { Button, Dropdown } from 'tdesign-react'
 import VideoRoom from "../utils/rtc/videoroom";
 import { VideoRoomRole } from "../utils/rtc/defines/user";
-import Janus from "../utils/janus/janus";
+import Janus, { JanusJS } from "../utils/janus/janus";
 import { useRef, useState } from "react";
 import Client from "../utils/rtc/client";
 import { PhotoIcon, ServiceIcon, DesktopIcon } from 'tdesign-icons-react';
+import VideoStream from "../utils/vc/video/video-stream";
+import VideoCall from "../utils/vc/video/video-call";
 
 
 function JanusTest () {
@@ -13,6 +15,7 @@ function JanusTest () {
   const [ videoInputs, setVideoInputs ] = useState<MediaDeviceInfo[]>([]);
   const [ audioInputs, setAudioInputs ] = useState<MediaDeviceInfo[]>([]);
   const [ inited, setInited ] = useState<boolean>(false)
+  const [ handle, setHandle ] = useState<JanusJS.PluginHandle>();
 
   var localTracks = {}, localVideos = 0;
 
@@ -65,20 +68,26 @@ function JanusTest () {
 
   videoRoom.emitter.on('videoroom-local-track', localTrackHandler);
 
-  const init = () => {
-    setAudioInputs(videoRoom.audioInputs);
-    setVideoInputs(videoRoom.videoInputs);
+  const init = async () => {
+    let vs = new VideoStream();
+    setTimeout(() => {
+      console.log('videoInputDevices', vs.videoInputDevices);
+      console.log('audioInputDevices', vs.audioInputDevices);
+      console.log('audioOutputDevices', vs.audioOutputDevices);
+    }, 1000)
+    // setAudioInputs(videoRoom.audioInputs);
+    // setVideoInputs(videoRoom.videoInputs);
 
-    setInited(true)
+    // setInited(true)
 
-    videoRoom.init({
-      room: 1234,
-      user: {
-        id: 1,
-        name: '张三',
-      },
-      ptype: VideoRoomRole.Publisher
-    });
+    // await videoRoom.init({
+    //   room: 1234,
+    //   user: {
+    //     id: 1,
+    //     name: '张三',
+    //   },
+    //   ptype: VideoRoomRole.Publisher
+    // })
   }
 
   const videoInputOptions = () => {
@@ -97,8 +106,9 @@ function JanusTest () {
   return (
     <div className="">
 
-      <div className="p-4 bg-white flex flex-row justify-center items-center">
+      <div className="p-4 bg-white flex flex-row justify-center items-center gap-4">
       <Button onClick={init}>初始化</Button>
+      <Button onClick={init}>退出房间</Button>
       </div>
 
       <div className="max-w-6xl mx-auto">

@@ -42,6 +42,7 @@ class HandleMessage {
   static joinRoom = async (props: HandleJoinRoom) => {
     return new Promise((resolve, reject) => {
       let handle = props.handle;
+      console.log('send message handle:', handle)
       handle.send({
         message: props.message,
         success: () => {

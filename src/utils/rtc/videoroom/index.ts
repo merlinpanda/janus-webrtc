@@ -13,9 +13,9 @@ export type joinProps = {
 }
 
 class VideoRoom {
-  private handle: JanusJS.PluginHandle;
+  public handle: JanusJS.PluginHandle | undefined;
 
-  private janus: Janus;
+  private janus: Janus | undefined;
 
   public emitter = mitt();
 
@@ -23,13 +23,13 @@ class VideoRoom {
 
   public videoRoomId: string | undefined;
 
-  public videoInputs: MediaDeviceInfo[];
+  public videoInputs: MediaDeviceInfo[] = [];
 
-  public audioInputs: MediaDeviceInfo[];
+  public audioInputs: MediaDeviceInfo[] = [];
 
-  public currentVideo: MediaDeviceInfo | null;
+  public currentVideo: MediaDeviceInfo | null = null;
 
-  public currentAudio: MediaDeviceInfo | null;
+  public currentAudio: MediaDeviceInfo | null = null;
 
   constructor () {
     this.videoRoomId = 'videoroom-' + Janus.randomString(10)
@@ -48,7 +48,7 @@ class VideoRoom {
   }
 
   public createOffer = (useAudio: boolean) => {
-    this.handle.createOffer({
+    this.handle?.createOffer({
       media: { audioRecv: false, videoRecv: false, audioSend: useAudio, videoSend: true },
       success: (jsep: any) => {
         Janus.log("Got publisher SDP!", jsep);
@@ -57,7 +57,7 @@ class VideoRoom {
 				// 	publish["audiocodec"] = acodec;
 				// if(vcodec)
 				// 	publish["videocodec"] = vcodec;
-				this.handle.send({ message: publish, jsep: jsep });
+				this.handle?.send({ message: publish, jsep: jsep });
       },
       error: (error) => {
 				Janus.error("WebRTC error:", error);
@@ -80,15 +80,16 @@ class VideoRoom {
 
   // 重新协商设备信息
 
-  public init = (props: joinProps) => {
+  public init = async (props: joinProps) => {
+    var that = this;
     RTC.init().then((janus: Janus) => {
-      this.janus = janus;
-      this.janus?.attach({
+      that.janus = janus;
+      that.janus?.attach({
         plugin: RTCType.VideoRoom,
-        opaqueId: this.videoRoomId,
+        opaqueId: that.videoRoomId,
         success: (handle) => {
-          this.handle = handle;
-          console.log('get handle', handle)
+          that.handle = handle;
+          console.log('get handle', that.handle)
 
           // 加入会议室
           this.join(props);
@@ -111,7 +112,7 @@ class VideoRoom {
           }
 
           if (jsep) {
-            this.handle.handleRemoteJsep({ jsep: jsep });
+            this.handle?.handleRemoteJsep({ jsep: jsep });
           }
         },
         onlocaltrack: (track, on) => {
@@ -147,11 +148,12 @@ class VideoRoom {
         },
       })
     }).catch(e => {
-      Janus.log('videoroom init error', e)
+     console.log("[ videoroom init error ]", e)
     })
   }
 
   public join = async (props: joinProps) => {
+    console.log('join handle', this.handle)
     await HandleMessage.joinRoom({
       handle: this.handle,
       message: {

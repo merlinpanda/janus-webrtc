@@ -12,9 +12,13 @@ class Video {
 
   public handle: JanusJS.PluginHandle;
 
-  private audioDeviceId: string;
+  public videoInputs: MediaDeviceInfo[] = [];
 
-  private videoDeviceId: string;
+  public audioInputs: MediaDeviceInfo[] = [];
+
+  private audioDeviceId: string | null = null;
+
+  private videoDeviceId: string | null = null;
 
   constructor (props: VideoType) {
     this.handle = props.handle;
@@ -33,11 +37,9 @@ class Video {
         audio: {
           deviceId: audioDeviceId
         },
-        replaceAudio: this.audioDeviceId === audioDeviceId,
         video: {
           deviceId: videoDeviceId
         },
-        replaceVideo: this.videoDeviceId === videoDeviceId,
         data: true
       },
       success: (jsep: any) => {
